@@ -58,6 +58,8 @@ tailwind.config = {
 #loading-overlay{position:fixed;inset:0;z-index:99999;background:#f8f9ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 .spinner{width:40px;height:40px;border:3px solid #ffd8e7;border-top-color:#a43073;border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+/* Push permission banner */
+#push-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;border-top:1.5px solid #ffd8e7;padding:16px 20px;box-shadow:0 -4px 20px rgba(164,48,115,0.1);}
 </style>
 </head>
 <body class="bg-background text-on-background">
@@ -68,6 +70,23 @@ tailwind.config = {
   </div>
   <div class="spinner"></div>
   <p class="text-sm text-on-surface-variant font-medium" id="loading-text">กำลังเชื่อมต่อ...</p>
+</div>
+
+<!-- Push Permission Banner -->
+<div id="push-banner">
+  <div class="max-w-sm mx-auto">
+    <div class="flex items-start gap-3 mb-3">
+      <span class="material-symbols-outlined text-primary text-2xl mt-0.5">notifications</span>
+      <div class="flex-1">
+        <p class="font-bold text-on-surface text-sm">รับการแจ้งเตือนออร์เดอร์</p>
+        <p class="text-xs text-on-surface-variant mt-0.5">อนุญาตให้แจ้งเตือนเมื่อมีออร์เดอร์ใหม่ แม้ปิดแอปอยู่</p>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="dismissPushBanner()" class="btn-outline flex-1 py-2.5 text-sm">ไม่ต้องการ</button>
+      <button onclick="requestPushPermission()" class="btn-primary flex-1 py-2.5 text-sm">อนุญาต</button>
+    </div>
+  </div>
 </div>
 
 <!-- PAGE: WELCOME -->
@@ -275,14 +294,29 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- โหลด Firebase SDK ก่อน script หลัก (ย้ายมาไว้ก่อน closing body) -->
+<!-- Firebase + Messaging SDK (ท้าย body เพื่อให้โหลดหลัง HTML) -->
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-messaging-compat.min.js"></script>
 
 <script>
-/* =====================================================
-   LOCAL STATE — menu lists (ไม่ sync Firebase, local เท่านั้น)
-   ===================================================== */
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+var VAPID_KEY = 'BG6_3UoO80C56YL7lgRHOLqg_evf-N7SexsbkLCGavUZaCcY6WBIayfx_tPpmKrGRQ_frOGdTrXs6Aidw-mgbBs';
+var FIREBASE_CONFIG = {
+  apiKey:            'AIzaSyBdF96EhRNEKvE5tYnVLxggeuXcK5q_X7Q',
+  authDomain:        'lunch-order-eeb0e.firebaseapp.com',
+  databaseURL:       'https://lunch-order-eeb0e-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId:         'lunch-order-eeb0e',
+  storageBucket:     'lunch-order-eeb0e.firebasestorage.app',
+  messagingSenderId: '183169767893',
+  appId:             '1:183169767893:web:3ec009512cdec2a58c455c'
+};
+
+/* ============================================================
+   LOCAL STATE
+   ============================================================ */
 var FOOD_EMOJIS = ['🍜','🥘','🍛','🥗','🍱','🥩','🍲','🥢','🍚','🫕'];
 var defaultMenus = [
   {id:1,name:'หมี่ผัดซีอิ๊ว',      nameEn:'Fried Vermicelli with Soy Sauce',        emoji:'🍜'},
@@ -299,11 +333,9 @@ var scheduleDate     = new Date().toISOString().split('T')[0];
 var scheduleDateLabel = 'วันนี้';
 var currentAddTarget = null;
 var menuIdCounter    = 100;
-
-/* Firebase state — จะถูก populate โดย listeners */
-var orders        = [];
-var notifications = [];
-var db, ordersRef, notifsRef;
+var orders           = [];
+var notifications    = [];
+var db, ordersRef, notifsRef, fcmTokensRef, messaging;
 
 var thaiDays   = ['อา','จ','อ','พ','พฤ','ศ','ส'];
 var thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -312,89 +344,133 @@ function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* =====================================================
-   FIREBASE INIT — เรียกใน DOMContentLoaded
-   ===================================================== */
+/* ============================================================
+   FIREBASE INIT
+   ============================================================ */
 function initFirebase() {
   try {
-    var firebaseConfig = {
-      apiKey:            'AIzaSyBdF96EhRNEKvE5tYnVLxggeuXcK5q_X7Q',
-      authDomain:        'lunch-order-eeb0e.firebaseapp.com',
-      databaseURL:       'https://lunch-order-eeb0e-default-rtdb.asia-southeast1.firebasedatabase.app',
-      projectId:         'lunch-order-eeb0e',
-      storageBucket:     'lunch-order-eeb0e.firebasestorage.app',
-      messagingSenderId: '183169767893',
-      appId:             '1:183169767893:web:3ec009512cdec2a58c455c'
-    };
+    if (!firebase.apps.length) { firebase.initializeApp(FIREBASE_CONFIG); }
+    db           = firebase.database();
+    ordersRef    = db.ref('orders');
+    notifsRef    = db.ref('notifications');
+    fcmTokensRef = db.ref('fcmTokens');
+    messaging    = firebase.messaging();
 
-    // ป้องกัน init ซ้ำ
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-
-    db        = firebase.database();
-    ordersRef = db.ref('orders');
-    notifsRef = db.ref('notifications');
-
-    /* Listener: orders — sync real-time ทุก device */
-    ordersRef.on('value', function(snapshot) {
+    // Real-time listeners
+    ordersRef.on('value', function(snap) {
       orders = [];
-      var data = snapshot.val();
+      var data = snap.val();
       if (data) {
-        Object.keys(data).forEach(function(key) {
-          var o = data[key];
-          o._fbKey = key;
-          orders.push(o);
-        });
+        Object.keys(data).forEach(function(k) { var o=data[k]; o._fbKey=k; orders.push(o); });
         orders.sort(function(a,b){ return b.createdAt - a.createdAt; });
       }
-      if (document.getElementById('page-receiver').classList.contains('active')) {
-        renderReceiverOrders();
-      }
+      if (document.getElementById('page-receiver').classList.contains('active')) { renderReceiverOrders(); }
       updateReceiverBadge();
-    }, function(err) {
-      console.error('orders listener error', err);
     });
 
-    /* Listener: notifications */
-    notifsRef.on('value', function(snapshot) {
+    notifsRef.on('value', function(snap) {
       notifications = [];
-      var data = snapshot.val();
+      var data = snap.val();
       if (data) {
-        Object.keys(data).forEach(function(key) {
-          var n = data[key];
-          n._fbKey = key;
-          notifications.push(n);
-        });
+        Object.keys(data).forEach(function(k) { var n=data[k]; n._fbKey=k; notifications.push(n); });
         notifications.sort(function(a,b){ return b.createdAt - a.createdAt; });
       }
-      if (document.getElementById('page-notifications').classList.contains('active')) {
-        renderNotifications();
-      }
+      if (document.getElementById('page-notifications').classList.contains('active')) { renderNotifications(); }
       updateNotifBadge();
-    }, function(err) {
-      console.error('notifications listener error', err);
     });
 
-    /* ซ่อน loading */
+    // Foreground push (แอปเปิดอยู่)
+    messaging.onMessage(function(payload) {
+      var title = (payload.notification && payload.notification.title) || 'Gourmet Hub';
+      var body  = (payload.notification && payload.notification.body)  || 'มีออร์เดอร์ใหม่';
+      showToast('🔔 ' + body);
+      // แสดง native notification ถ้าได้รับ permission
+      if (Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: '/lunch-order/icon.png', tag: 'lunch-order' });
+      }
+    });
+
     document.getElementById('loading-overlay').style.display = 'none';
 
+    // ลงทะเบียน Service Worker แล้วตรวจสอบ permission
+    registerServiceWorker();
+
   } catch(e) {
-    console.error('Firebase init failed:', e);
+    console.error('Firebase init error:', e);
     document.getElementById('loading-text').textContent = 'เชื่อมต่อไม่ได้ กรุณา refresh';
   }
 }
 
-/* รอให้ DOM + scripts ทั้งหมดพร้อม */
+/* ============================================================
+   SERVICE WORKER + PUSH PERMISSION
+   ============================================================ */
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) { return; }
+  navigator.serviceWorker.register('/lunch-order/sw.js').then(function(reg) {
+    console.log('SW registered:', reg.scope);
+    messaging.useServiceWorker(reg);
+    // ถ้ายังไม่เคยตัดสินใจ → แสดง banner
+    if (Notification.permission === 'default') {
+      setTimeout(function() {
+        document.getElementById('push-banner').style.display = 'block';
+      }, 2000);
+    } else if (Notification.permission === 'granted') {
+      // เคยอนุญาตแล้ว → ขอ token ทันที
+      getFCMToken();
+    }
+  }).catch(function(e) { console.warn('SW register failed:', e); });
+}
+
+function requestPushPermission() {
+  document.getElementById('push-banner').style.display = 'none';
+  Notification.requestPermission().then(function(permission) {
+    if (permission === 'granted') {
+      getFCMToken();
+      showToast('✅ เปิดรับการแจ้งเตือนแล้ว');
+    } else {
+      showToast('ปิดการแจ้งเตือน — สามารถเปิดได้ในการตั้งค่า browser');
+    }
+  });
+}
+
+function dismissPushBanner() {
+  document.getElementById('push-banner').style.display = 'none';
+}
+
+function getFCMToken() {
+  if (!messaging) { return; }
+  messaging.getToken({ vapidKey: VAPID_KEY }).then(function(token) {
+    if (token) {
+      // บันทึก token ลง Firebase เพื่อให้ส่ง push ได้ทุก device
+      fcmTokensRef.child(token.substring(0, 20)).set({
+        token: token,
+        savedAt: Date.now()
+      });
+      console.log('FCM Token saved');
+    }
+  }).catch(function(e) { console.warn('FCM token error:', e); });
+}
+
+/* ส่ง Push Notification ไปทุก device ที่ลงทะเบียนไว้
+   โดยใช้ Firebase Database เป็นตัวกลาง trigger SW */
+function sendPushToAll(menuName, type) {
+  // เขียนข้อมูลลง /pushQueue — SW จะ pick up ไปแสดง
+  db.ref('pushQueue').push({
+    title: '🍽️ มีออร์เดอร์ใหม่!',
+    body:  menuName + ' (' + (type === 'sameday' ? 'วันนี้' : 'วางแผนล่วงหน้า') + ')',
+    createdAt: Date.now()
+  });
+}
+
+/* ============================================================
+   FIREBASE INIT TRIGGER — retry จนกว่า SDK พร้อม
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', function() {
-  /* ตรวจว่า firebase object พร้อมหรือยัง
-     ถ้ายังไม่พร้อม (script โหลดไม่ทัน) ให้ retry */
   var retries = 0;
-  var maxRetries = 20; // รอสูงสุด 2 วินาที (20 * 100ms)
   function tryInit() {
     if (typeof firebase !== 'undefined' && firebase.app) {
       initFirebase();
-    } else if (retries < maxRetries) {
+    } else if (retries < 30) {
       retries++;
       setTimeout(tryInit, 100);
     } else {
@@ -404,9 +480,9 @@ document.addEventListener('DOMContentLoaded', function() {
   tryInit();
 });
 
-/* =====================================================
+/* ============================================================
    NAVIGATION
-   ===================================================== */
+   ============================================================ */
 function goTo(pageId) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   var el = document.getElementById(pageId);
@@ -422,28 +498,26 @@ function goTo(pageId) {
   updateNotifBadge();
 }
 
-/* =====================================================
+/* ============================================================
    TOAST
-   ===================================================== */
+   ============================================================ */
 function showToast(msg, duration) {
   duration = duration || 2800;
   var ex = document.querySelector('.toast');
   if (ex) { ex.remove(); }
   var t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
+  t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(function(){
     if (!t.parentNode) { return; }
-    t.style.transition = 'opacity 0.3s';
-    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.3s'; t.style.opacity = '0';
     setTimeout(function(){ t.remove(); }, 320);
   }, duration);
 }
 
-/* =====================================================
+/* ============================================================
    SAME DAY MENU
-   ===================================================== */
+   ============================================================ */
 function renderSamedayMenu() {
   var el = document.getElementById('sameday-menu-list');
   if (!samedayMenus.length) {
@@ -455,10 +529,8 @@ function renderSamedayMenu() {
     return '<div class="menu-card bg-white rounded-2xl border '+(sel?'border-primary shadow-md':'border-zinc-100 shadow-sm')+' overflow-hidden">'
       +'<div class="p-4 flex items-center gap-3">'
       +'<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">'+m.emoji+'</div>'
-      +'<div class="flex-1 min-w-0">'
-      +'<p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
-      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p>'
-      +'</div>'
+      +'<div class="flex-1 min-w-0"><p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p></div>'
       +'<div class="flex items-center gap-2">'
       +'<button onclick="deleteSamedayMenu('+m.id+')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>'
       +'<button onclick="selectSameday('+m.id+')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all '+(sel?'bg-primary text-white':'border-2 border-outline-variant hover:border-primary')+'"><span class="material-symbols-outlined text-lg">'+(sel?'check':'radio_button_unchecked')+'</span></button>'
@@ -488,34 +560,29 @@ function sendSameDayOrder(){
     menuName:m.name, menuEmoji:m.emoji, type:'sameday',
     dateStr:formatDate(new Date()), status:'pending', createdAt:Date.now()
   }).then(function(){
+    sendPushToAll(m.name, 'sameday'); // ส่ง push ไปทุก device
     samedaySelected=null; renderSamedayMenu();
     showToast('✅ ส่งคำสั่งอาหารเรียบร้อยแล้ว!');
-  }).catch(function(e){ showToast('❌ เกิดข้อผิดพลาด: '+e.message); });
+  }).catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
 }
 
-/* =====================================================
+/* ============================================================
    SCHEDULE MENU
-   ===================================================== */
+   ============================================================ */
 function initSchedule(){
-  var today=new Date();
-  var chips=document.getElementById('date-chips');
-  chips.innerHTML='';
+  var today=new Date(); var chips=document.getElementById('date-chips'); chips.innerHTML='';
   for(var i=0;i<7;i++){
-    var d=new Date(today);
-    d.setDate(today.getDate()+i);
+    var d=new Date(today); d.setDate(today.getDate()+i);
     var iso=d.toISOString().split('T')[0];
     var dayLabel=(i===0)?'วันนี้':thaiDays[d.getDay()];
-    var dayNum=d.getDate();
-    var monthLbl=thaiMonths[d.getMonth()];
+    var dayNum=d.getDate(); var monthLbl=thaiMonths[d.getMonth()];
     var chipLabel=(i===0)?'วันนี้':(dayNum+' '+monthLbl);
     if(iso===scheduleDate){scheduleDateLabel=chipLabel;}
     var isActive=(scheduleDate===iso);
     var chip=document.createElement('button');
     chip.className='date-chip'+(isActive?' active':'');
     chip.dataset.date=iso; chip.dataset.label=chipLabel;
-    chip.innerHTML='<span class="chip-day">'+dayLabel+'</span>'
-      +'<span class="chip-num">'+dayNum+'</span>'
-      +'<span class="chip-month">'+monthLbl+'</span>';
+    chip.innerHTML='<span class="chip-day">'+dayLabel+'</span><span class="chip-num">'+dayNum+'</span><span class="chip-month">'+monthLbl+'</span>';
     (function(iv,lv){chip.onclick=function(){scheduleDate=iv;scheduleDateLabel=lv;initSchedule();renderScheduleMenu();};})(iso,chipLabel);
     chips.appendChild(chip);
   }
@@ -531,10 +598,8 @@ function renderScheduleMenu(){
     return '<div class="menu-card bg-white rounded-2xl border '+(sel?'border-primary shadow-md':'border-zinc-100 shadow-sm')+' overflow-hidden">'
       +'<div class="p-4 flex items-center gap-3">'
       +'<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">'+m.emoji+'</div>'
-      +'<div class="flex-1 min-w-0">'
-      +'<p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
-      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p>'
-      +'</div>'
+      +'<div class="flex-1 min-w-0"><p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p></div>'
       +'<div class="flex items-center gap-2">'
       +'<button onclick="deleteScheduleMenu('+m.id+')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>'
       +'<button onclick="selectSchedule('+m.id+')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all '+(sel?'bg-primary text-white':'border-2 border-outline-variant hover:border-primary')+'"><span class="material-symbols-outlined text-lg">'+(sel?'check':'radio_button_unchecked')+'</span></button>'
@@ -565,14 +630,15 @@ function sendScheduleOrder(){
     menuName:m.name, menuEmoji:m.emoji, type:'schedule',
     dateStr:scheduleDateLabel, status:'pending', createdAt:Date.now()
   }).then(function(){
+    sendPushToAll(m.name, 'schedule'); // ส่ง push ไปทุก device
     scheduleSelected=null;renderScheduleMenu();
     showToast('✅ วางแผนสั่งอาหารเรียบร้อยแล้ว!');
   }).catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
 }
 
-/* =====================================================
+/* ============================================================
    ADD MENU MODAL
-   ===================================================== */
+   ============================================================ */
 function openAddMenuModal(target){
   currentAddTarget=target;
   document.getElementById('new-menu-name').value='';
@@ -589,9 +655,9 @@ function confirmAddMenu(){
   closeModal();showToast('✅ เพิ่มเมนูเรียบร้อยแล้ว');
 }
 
-/* =====================================================
+/* ============================================================
    RECEIVER
-   ===================================================== */
+   ============================================================ */
 function renderReceiverOrders(){
   var visible=orders.filter(function(o){return o.status==='pending'||o.status==='acknowledged';});
   document.getElementById('receiver-empty').style.display=visible.length?'none':'flex';
@@ -603,11 +669,9 @@ function renderReceiverOrders(){
     var barCls=(o.type==='sameday')?'bg-primary-container':'bg-tertiary-container';
     return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 '+(isDone?'opacity-60':'shadow-sm')+' overflow-hidden" data-fbkey="'+escHtml(o._fbKey)+'">'
       +'<div class="h-2 '+barCls+(isDone?' opacity-40':'')+'"></div>'
-      +'<div class="p-5">'
-      +'<div class="flex items-start gap-3 mb-4">'
+      +'<div class="p-5"><div class="flex items-start gap-3 mb-4">'
       +'<div class="w-14 h-14 rounded-xl '+(isDone?'bg-zinc-100 img-grayscale':'bg-primary-fixed')+' flex items-center justify-center text-2xl flex-shrink-0">'+o.menuEmoji+'</div>'
-      +'<div class="flex-1 min-w-0">'
-      +'<div class="flex items-center gap-2 mb-1 flex-wrap">'
+      +'<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1 flex-wrap">'
       +'<span class="text-xs font-bold px-2 py-0.5 rounded-full '+(isDone?'bg-zinc-100 text-zinc-400':typeCls)+'">'+typeLabel+'</span>'
       +(isDone?'<span class="text-xs font-semibold text-tertiary bg-green-50 px-2 py-0.5 rounded-full">✓ รับทราบแล้ว</span>':'')
       +'</div>'
@@ -617,25 +681,17 @@ function renderReceiverOrders(){
       +'<div class="flex items-center gap-2 p-3 '+(isDone?'bg-zinc-50':'bg-primary-fixed/30')+' rounded-xl mb-4">'
       +'<span class="material-symbols-outlined text-base '+(isDone?'text-zinc-300':'text-primary')+'">person</span>'
       +'<div><p class="text-xs text-on-surface-variant">ผู้สั่ง</p>'
-      +'<p class="text-sm font-semibold '+(isDone?'text-zinc-400':'text-on-surface')+'">ผู้บริหาร</p></div>'
-      +'</div>'
+      +'<p class="text-sm font-semibold '+(isDone?'text-zinc-400':'text-on-surface')+'">ผู้บริหาร</p></div></div>'
       +(isDone
         ?'<button class="order-delete-btn w-full py-3 flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 text-zinc-400 text-sm font-semibold hover:bg-error-container hover:text-error hover:border-error transition-all"><span class="material-symbols-outlined text-base">delete</span> ลบรายการนี้</button>'
         :'<button class="order-ack-btn btn-primary w-full py-3 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-base">check_circle</span> รับทราบคำสั่ง</button>'
-      )
-      +'</div></div>';
+      )+'</div></div>';
   }).join('');
   list.querySelectorAll('.order-ack-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var card=btn.closest('[data-fbkey]');
-      if(card){acknowledgeOrder(card.dataset.fbkey);}
-    });
+    btn.addEventListener('click',function(){var card=btn.closest('[data-fbkey]');if(card){acknowledgeOrder(card.dataset.fbkey);}});
   });
   list.querySelectorAll('.order-delete-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var card=btn.closest('[data-fbkey]');
-      if(card){deleteOrder(card.dataset.fbkey);}
-    });
+    btn.addEventListener('click',function(){var card=btn.closest('[data-fbkey]');if(card){deleteOrder(card.dataset.fbkey);}});
   });
   updateReceiverBadge();
 }
@@ -644,10 +700,8 @@ function acknowledgeOrder(fbKey){
   if(!order||!ordersRef){return;}
   ordersRef.child(fbKey).update({status:'acknowledged'}).then(function(){
     notifsRef.push({
-      menuName:order.menuName, menuEmoji:order.menuEmoji,
-      dateStr:order.dateStr, type:order.type,
-      message:'เมนู "'+order.menuName+'" ได้รับการดำเนินการเรียบร้อยแล้ว',
-      read:false, createdAt:Date.now()
+      menuName:order.menuName,menuEmoji:order.menuEmoji,dateStr:order.dateStr,type:order.type,
+      message:'เมนู "'+order.menuName+'" ได้รับการดำเนินการเรียบร้อยแล้ว',read:false,createdAt:Date.now()
     });
     showToast('✅ รับทราบคำสั่งเรียบร้อยแล้ว');
   }).catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
@@ -665,9 +719,9 @@ function updateReceiverBadge(){
   else{badge.classList.add('hidden');}
 }
 
-/* =====================================================
+/* ============================================================
    NOTIFICATIONS
-   ===================================================== */
+   ============================================================ */
 function renderNotifications(){
   var empty=document.getElementById('notifs-empty');
   var list=document.getElementById('notif-list');
@@ -675,25 +729,17 @@ function renderNotifications(){
   list.innerHTML=notifications.map(function(n){
     return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 shadow-sm p-4 flex items-start gap-3" data-fbkey="'+escHtml(n._fbKey)+'">'
       +'<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-xl flex-shrink-0">'+n.menuEmoji+'</div>'
-      +'<div class="flex-1 min-w-0">'
-      +'<div class="flex items-center gap-2 mb-1">'
-      +'<span class="text-xs font-bold text-primary px-2 py-0.5 rounded-full bg-pink-50">รับทราบแล้ว</span>'
-      +'</div>'
+      +'<div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1">'
+      +'<span class="text-xs font-bold text-primary px-2 py-0.5 rounded-full bg-pink-50">รับทราบแล้ว</span></div>'
       +'<p class="text-sm font-semibold text-on-surface leading-tight">'+escHtml(n.message)+'</p>'
-      +'<p class="text-xs text-on-surface-variant mt-0.5">📅 '+n.dateStr+'</p>'
-      +'</div>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5">📅 '+n.dateStr+'</p></div>'
       +'<button class="notif-delete-btn w-7 h-7 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors flex-shrink-0"><span class="material-symbols-outlined text-base">close</span></button>'
       +'</div>';
   }).join('');
   list.querySelectorAll('.notif-delete-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var card=btn.closest('[data-fbkey]');
-      if(card){deleteNotif(card.dataset.fbkey);}
-    });
+    btn.addEventListener('click',function(){var card=btn.closest('[data-fbkey]');if(card){deleteNotif(card.dataset.fbkey);}});
   });
-  notifications.forEach(function(n){
-    if(!n.read&&notifsRef){notifsRef.child(n._fbKey).update({read:true});}
-  });
+  notifications.forEach(function(n){if(!n.read&&notifsRef){notifsRef.child(n._fbKey).update({read:true});}});
   updateNotifBadge();
 }
 function deleteNotif(fbKey){
@@ -712,9 +758,9 @@ function updateNotifBadge(){
   if(unread>0){badge.classList.remove('hidden');}else{badge.classList.add('hidden');}
 }
 
-/* =====================================================
+/* ============================================================
    UTILS
-   ===================================================== */
+   ============================================================ */
 function formatDate(d){return d.getDate()+' '+thaiMonths[d.getMonth()]+' '+(d.getFullYear()+543);}
 
 document.addEventListener('keydown',function(e){
