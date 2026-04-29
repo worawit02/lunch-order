@@ -9,69 +9,66 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script>
 tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "primary-container":"#f472b6","on-secondary":"#ffffff","on-secondary-container":"#686066",
-        "primary-fixed":"#ffd8e7","primary-fixed-dim":"#ffafd3","on-primary-fixed":"#3d0026",
-        "on-primary-fixed-variant":"#85145a","surface-variant":"#d9e3f6","background":"#f8f9ff",
-        "on-tertiary-container":"#123f00","surface-dim":"#d0dbed","surface-container-high":"#dee9fc",
-        "secondary-container":"#e7dde3","surface-container-lowest":"#ffffff","inverse-on-surface":"#eaf1ff",
-        "outline":"#87717a","surface-container-low":"#eff4ff","on-surface":"#121c2a",
-        "on-primary-container":"#6d0047","outline-variant":"#dac0c9","error":"#ba1a1a",
-        "error-container":"#ffdad6","on-error":"#ffffff","on-secondary-fixed-variant":"#4b454a",
-        "secondary-fixed-dim":"#cec4ca","on-primary":"#ffffff","on-background":"#121c2a",
-        "primary":"#a43073","surface-tint":"#a43073","tertiary-container":"#62b240",
-        "secondary-fixed":"#eae0e6","on-surface-variant":"#544249","tertiary-fixed-dim":"#88db63",
-        "inverse-primary":"#ffafd3","surface-container-highest":"#d9e3f6","secondary":"#635c61",
-        "surface-container":"#e6eeff","surface":"#f8f9ff","tertiary":"#246d00",
-        "tertiary-fixed":"#a3f87c","on-tertiary-fixed":"#062100","on-tertiary":"#ffffff",
-        "on-secondary-fixed":"#1f1a1e","inverse-surface":"#27313f","on-error-container":"#93000a",
-      },
-      fontFamily: { sans: ["Plus Jakarta Sans", "sans-serif"] },
-    }
-  }
+  darkMode:"class",
+  theme:{extend:{colors:{
+    "primary-container":"#f472b6","on-secondary":"#ffffff","on-secondary-container":"#686066",
+    "primary-fixed":"#ffd8e7","primary-fixed-dim":"#ffafd3","on-primary-fixed":"#3d0026",
+    "on-primary-fixed-variant":"#85145a","surface-variant":"#d9e3f6","background":"#f8f9ff",
+    "on-tertiary-container":"#123f00","surface-dim":"#d0dbed","surface-container-high":"#dee9fc",
+    "secondary-container":"#e7dde3","surface-container-lowest":"#ffffff","inverse-on-surface":"#eaf1ff",
+    "outline":"#87717a","surface-container-low":"#eff4ff","on-surface":"#121c2a",
+    "on-primary-container":"#6d0047","outline-variant":"#dac0c9","error":"#ba1a1a",
+    "error-container":"#ffdad6","on-error":"#ffffff","on-secondary-fixed-variant":"#4b454a",
+    "secondary-fixed-dim":"#cec4ca","on-primary":"#ffffff","on-background":"#121c2a",
+    "primary":"#a43073","surface-tint":"#a43073","tertiary-container":"#62b240",
+    "secondary-fixed":"#eae0e6","on-surface-variant":"#544249","tertiary-fixed-dim":"#88db63",
+    "inverse-primary":"#ffafd3","surface-container-highest":"#d9e3f6","secondary":"#635c61",
+    "surface-container":"#e6eeff","surface":"#f8f9ff","tertiary":"#246d00",
+    "tertiary-fixed":"#a3f87c","on-tertiary-fixed":"#062100","on-tertiary":"#ffffff",
+    "on-secondary-fixed":"#1f1a1e","inverse-surface":"#27313f","on-error-container":"#93000a",
+  },fontFamily:{sans:["Plus Jakarta Sans","sans-serif"]}}}
 }
 </script>
 <style>
-* { font-family: 'Plus Jakarta Sans', sans-serif; }
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-.page { display: none; min-height: 100dvh; }
-.page.active { display: flex; flex-direction: column; }
-.slide-in { animation: slideIn 0.3s ease; }
-@keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.toast {
-  position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
-  background: #1e1e2e; color: #fff; padding: 12px 20px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; z-index: 9999; white-space: nowrap;
-  animation: toastIn 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none;
-}
-@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-.menu-card { transition: all 0.15s ease; }
-.menu-card:active { transform: scale(0.98); }
-.btn-primary { background: #a43073; color: white; border-radius: 100px; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
-.btn-primary:active { transform: scale(0.97); background: #7d2456; }
-.btn-outline { border: 1.5px solid #a43073; color: #a43073; border-radius: 100px; font-weight: 600; font-size: 14px; transition: all 0.2s; background: transparent; cursor: pointer; }
-.btn-outline:active { transform: scale(0.97); background: #ffd8e7; }
-/* BUG1 FIX: date-chip text color inherits from .active; don't set color on parent to avoid override conflicts */
-.date-chip { min-width: 64px; height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 18px; cursor: pointer; transition: all 0.2s; border: 1.5px solid #e5e7eb; background: white; flex-shrink: 0; color: #87717a; }
-.date-chip.active { background: #a43073; border-color: #a43073; color: white; box-shadow: 0 4px 16px rgba(164,48,115,0.3); }
-.date-chip .chip-day   { font-size: 11px; font-weight: 500; margin-bottom: 2px; }
-.date-chip .chip-num   { font-size: 20px; font-weight: 800; line-height: 1; color: #121c2a; }
-.date-chip.active .chip-num { color: white; }
-.date-chip .chip-month { font-size: 10px; }
-.notif-item { animation: fadeIn 0.3s ease; }
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.selected-bar { display: none; }
-.selected-bar.visible { display: flex; }
-/* BUG4 FIX: grayscale via CSS class instead of Tailwind utility (not always available in CDN) */
-.img-grayscale { filter: grayscale(1); opacity: 0.6; }
+*{font-family:'Plus Jakarta Sans',sans-serif;}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+.page{display:none;min-height:100dvh;}
+.page.active{display:flex;flex-direction:column;}
+.slide-in{animation:slideIn 0.3s ease;}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#1e1e2e;color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:9999;white-space:nowrap;animation:toastIn 0.3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.2);pointer-events:none;}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.menu-card{transition:all 0.15s ease;}.menu-card:active{transform:scale(0.98);}
+.btn-primary{background:#a43073;color:white;border-radius:100px;font-weight:600;font-size:14px;transition:all 0.2s;cursor:pointer;}
+.btn-primary:active{transform:scale(0.97);background:#7d2456;}
+.btn-outline{border:1.5px solid #a43073;color:#a43073;border-radius:100px;font-weight:600;font-size:14px;transition:all 0.2s;background:transparent;cursor:pointer;}
+.btn-outline:active{transform:scale(0.97);background:#ffd8e7;}
+.date-chip{min-width:64px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:18px;cursor:pointer;transition:all 0.2s;border:1.5px solid #e5e7eb;background:white;flex-shrink:0;color:#87717a;}
+.date-chip.active{background:#a43073;border-color:#a43073;color:white;box-shadow:0 4px 16px rgba(164,48,115,0.3);}
+.date-chip .chip-day{font-size:11px;font-weight:500;margin-bottom:2px;}
+.date-chip .chip-num{font-size:20px;font-weight:800;line-height:1;color:#121c2a;}
+.date-chip.active .chip-num{color:white;}
+.date-chip .chip-month{font-size:10px;}
+.notif-item{animation:fadeIn 0.3s ease;}
+.hide-scrollbar::-webkit-scrollbar{display:none;}
+.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+.selected-bar{display:none;}.selected-bar.visible{display:flex;}
+.img-grayscale{filter:grayscale(1);opacity:0.6;}
+#loading-overlay{position:fixed;inset:0;z-index:99999;background:#f8f9ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.spinner{width:40px;height:40px;border:3px solid #ffd8e7;border-top-color:#a43073;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body class="bg-background text-on-background">
+
+<div id="loading-overlay">
+  <div class="w-14 h-14 rounded-2xl bg-primary-fixed flex items-center justify-center">
+    <span class="material-symbols-outlined text-primary text-3xl">restaurant</span>
+  </div>
+  <div class="spinner"></div>
+  <p class="text-sm text-on-surface-variant font-medium" id="loading-text">กำลังเชื่อมต่อ...</p>
+</div>
 
 <!-- PAGE: WELCOME -->
 <div id="page-welcome" class="page active">
@@ -271,7 +268,6 @@ tailwind.config = {
     <div class="w-10 h-1 bg-zinc-200 rounded-full mx-auto mb-5"></div>
     <h3 class="font-bold text-on-surface text-lg mb-4">เพิ่มเมนูใหม่</h3>
     <input id="new-menu-name" type="text" placeholder="ชื่อเมนูอาหาร..." class="w-full border border-outline-variant rounded-xl px-4 py-3 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none mb-5 text-on-surface"/>
-
     <div class="flex gap-3">
       <button onclick="closeModal()" class="btn-outline flex-1 py-3">ยกเลิก</button>
       <button onclick="confirmAddMenu()" class="btn-primary flex-1 py-3">เพิ่มเมนู</button>
@@ -279,414 +275,453 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- โหลด Firebase SDK ก่อน script หลัก (ย้ายมาไว้ก่อน closing body) -->
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.min.js"></script>
+
 <script>
-// BUG1 FIX: use consistent var throughout to avoid mixed ES6/ES5 scoping issues
+/* =====================================================
+   LOCAL STATE — menu lists (ไม่ sync Firebase, local เท่านั้น)
+   ===================================================== */
 var FOOD_EMOJIS = ['🍜','🥘','🍛','🥗','🍱','🥩','🍲','🥢','🍚','🫕'];
 var defaultMenus = [
-  { id:1, name:'หมี่ผัดซีอิ๊ว',       nameEn:'Fried Vermicelli with Soy Sauce',        emoji:'🍜' },
-  { id:2, name:'คะน้าปลากระป๋อง',    nameEn:'Stir-fried Kale with Canned Fish',         emoji:'🥬' },
-  { id:3, name:'หมูผัดพริกหยวก',     nameEn:'Stir-fried Pork with Bell Peppers',        emoji:'🥩' },
-  { id:4, name:'สุกี้หมู',            nameEn:'Pork Sukiyaki',                            emoji:'🍲' },
-  { id:5, name:'หมูสับผัดพริกเกลือ', nameEn:'Stir-fried Minced Pork with Chili & Salt', emoji:'🍛' },
+  {id:1,name:'หมี่ผัดซีอิ๊ว',      nameEn:'Fried Vermicelli with Soy Sauce',        emoji:'🍜'},
+  {id:2,name:'คะน้าปลากระป๋อง',   nameEn:'Stir-fried Kale with Canned Fish',         emoji:'🥬'},
+  {id:3,name:'หมูผัดพริกหยวก',    nameEn:'Stir-fried Pork with Bell Peppers',        emoji:'🥩'},
+  {id:4,name:'สุกี้หมู',           nameEn:'Pork Sukiyaki',                            emoji:'🍲'},
+  {id:5,name:'หมูสับผัดพริกเกลือ',nameEn:'Stir-fried Minced Pork with Chili & Salt', emoji:'🍛'},
 ];
-
 var samedayMenus    = JSON.parse(JSON.stringify(defaultMenus));
 var scheduleMenus   = JSON.parse(JSON.stringify(defaultMenus));
 var samedaySelected  = null;
 var scheduleSelected = null;
 var scheduleDate     = new Date().toISOString().split('T')[0];
-// BUG2 FIX: store scheduleDate label in JS state, not read from DOM at send-time
 var scheduleDateLabel = 'วันนี้';
 var currentAddTarget = null;
-var orders           = [];
-var notifications    = [];
-var orderIdCounter   = 1000;
 var menuIdCounter    = 100;
+
+/* Firebase state — จะถูก populate โดย listeners */
+var orders        = [];
+var notifications = [];
+var db, ordersRef, notifsRef;
 
 var thaiDays   = ['อา','จ','อ','พ','พฤ','ศ','ส'];
 var thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
-function escHtml(s) {
+function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ===== NAVIGATION ===== */
+/* =====================================================
+   FIREBASE INIT — เรียกใน DOMContentLoaded
+   ===================================================== */
+function initFirebase() {
+  try {
+    var firebaseConfig = {
+      apiKey:            'AIzaSyBdF96EhRNEKvE5tYnVLxggeuXcK5q_X7Q',
+      authDomain:        'lunch-order-eeb0e.firebaseapp.com',
+      databaseURL:       'https://lunch-order-eeb0e-default-rtdb.asia-southeast1.firebasedatabase.app',
+      projectId:         'lunch-order-eeb0e',
+      storageBucket:     'lunch-order-eeb0e.firebasestorage.app',
+      messagingSenderId: '183169767893',
+      appId:             '1:183169767893:web:3ec009512cdec2a58c455c'
+    };
+
+    // ป้องกัน init ซ้ำ
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    db        = firebase.database();
+    ordersRef = db.ref('orders');
+    notifsRef = db.ref('notifications');
+
+    /* Listener: orders — sync real-time ทุก device */
+    ordersRef.on('value', function(snapshot) {
+      orders = [];
+      var data = snapshot.val();
+      if (data) {
+        Object.keys(data).forEach(function(key) {
+          var o = data[key];
+          o._fbKey = key;
+          orders.push(o);
+        });
+        orders.sort(function(a,b){ return b.createdAt - a.createdAt; });
+      }
+      if (document.getElementById('page-receiver').classList.contains('active')) {
+        renderReceiverOrders();
+      }
+      updateReceiverBadge();
+    }, function(err) {
+      console.error('orders listener error', err);
+    });
+
+    /* Listener: notifications */
+    notifsRef.on('value', function(snapshot) {
+      notifications = [];
+      var data = snapshot.val();
+      if (data) {
+        Object.keys(data).forEach(function(key) {
+          var n = data[key];
+          n._fbKey = key;
+          notifications.push(n);
+        });
+        notifications.sort(function(a,b){ return b.createdAt - a.createdAt; });
+      }
+      if (document.getElementById('page-notifications').classList.contains('active')) {
+        renderNotifications();
+      }
+      updateNotifBadge();
+    }, function(err) {
+      console.error('notifications listener error', err);
+    });
+
+    /* ซ่อน loading */
+    document.getElementById('loading-overlay').style.display = 'none';
+
+  } catch(e) {
+    console.error('Firebase init failed:', e);
+    document.getElementById('loading-text').textContent = 'เชื่อมต่อไม่ได้ กรุณา refresh';
+  }
+}
+
+/* รอให้ DOM + scripts ทั้งหมดพร้อม */
+document.addEventListener('DOMContentLoaded', function() {
+  /* ตรวจว่า firebase object พร้อมหรือยัง
+     ถ้ายังไม่พร้อม (script โหลดไม่ทัน) ให้ retry */
+  var retries = 0;
+  var maxRetries = 20; // รอสูงสุด 2 วินาที (20 * 100ms)
+  function tryInit() {
+    if (typeof firebase !== 'undefined' && firebase.app) {
+      initFirebase();
+    } else if (retries < maxRetries) {
+      retries++;
+      setTimeout(tryInit, 100);
+    } else {
+      document.getElementById('loading-text').textContent = 'โหลด Firebase ไม่ได้ กรุณา refresh';
+    }
+  }
+  tryInit();
+});
+
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
 function goTo(pageId) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   var el = document.getElementById(pageId);
   el.classList.add('active');
-  Array.from(el.children).forEach(function(c) {
+  Array.from(el.children).forEach(function(c){
     c.classList.add('slide-in');
-    setTimeout(function() { c.classList.remove('slide-in'); }, 350);
+    setTimeout(function(){ c.classList.remove('slide-in'); }, 350);
   });
   if (pageId === 'page-same-day')      { renderSamedayMenu(); }
   if (pageId === 'page-schedule')      { initSchedule(); renderScheduleMenu(); }
   if (pageId === 'page-receiver')      { renderReceiverOrders(); }
-  // BUG5 FIX: renderNotifications marks all as read and calls updateNotifBadge internally,
-  // so call it before updateNotifBadge below to ensure badge clears correctly
   if (pageId === 'page-notifications') { renderNotifications(); return; }
   updateNotifBadge();
 }
 
-/* ===== TOAST ===== */
+/* =====================================================
+   TOAST
+   ===================================================== */
 function showToast(msg, duration) {
   duration = duration || 2800;
-  var existing = document.querySelector('.toast');
-  if (existing) { existing.remove(); }
+  var ex = document.querySelector('.toast');
+  if (ex) { ex.remove(); }
   var t = document.createElement('div');
   t.className = 'toast';
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(function() {
+  setTimeout(function(){
     if (!t.parentNode) { return; }
     t.style.transition = 'opacity 0.3s';
     t.style.opacity = '0';
-    setTimeout(function() { t.remove(); }, 320);
+    setTimeout(function(){ t.remove(); }, 320);
   }, duration);
 }
 
-/* ===== SAME DAY ===== */
+/* =====================================================
+   SAME DAY MENU
+   ===================================================== */
 function renderSamedayMenu() {
   var el = document.getElementById('sameday-menu-list');
   if (!samedayMenus.length) {
     el.innerHTML = '<p class="text-center text-sm text-on-surface-variant py-10">ไม่มีเมนู — กด "เพิ่มเมนู" เพื่อเพิ่ม</p>';
-    updateSamedayBar();
-    return;
+    updateSamedayBar(); return;
   }
   el.innerHTML = samedayMenus.map(function(m) {
     var sel = (samedaySelected === m.id);
-    return '<div class="menu-card bg-white rounded-2xl border ' + (sel ? 'border-primary shadow-md' : 'border-zinc-100 shadow-sm') + ' overflow-hidden">'
-      + '<div class="p-4 flex items-center gap-3">'
-      + '<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">' + m.emoji + '</div>'
-      + '<div class="flex-1 min-w-0">'
-      + '<p class="font-bold text-on-surface text-sm leading-tight">' + escHtml(m.name) + '</p>'
-      + '<p class="text-xs text-on-surface-variant mt-0.5 truncate">' + escHtml(m.nameEn) + '</p>'
-      + '</div>'
-      + '<div class="flex items-center gap-2">'
-      + '<button onclick="deleteSamedayMenu(' + m.id + ')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors">'
-      + '<span class="material-symbols-outlined text-lg">delete</span></button>'
-      + '<button onclick="selectSameday(' + m.id + ')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all ' + (sel ? 'bg-primary text-white' : 'border-2 border-outline-variant hover:border-primary') + '">'
-      + '<span class="material-symbols-outlined text-lg">' + (sel ? 'check' : 'radio_button_unchecked') + '</span></button>'
-      + '</div></div></div>';
+    return '<div class="menu-card bg-white rounded-2xl border '+(sel?'border-primary shadow-md':'border-zinc-100 shadow-sm')+' overflow-hidden">'
+      +'<div class="p-4 flex items-center gap-3">'
+      +'<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">'+m.emoji+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p>'
+      +'</div>'
+      +'<div class="flex items-center gap-2">'
+      +'<button onclick="deleteSamedayMenu('+m.id+')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>'
+      +'<button onclick="selectSameday('+m.id+')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all '+(sel?'bg-primary text-white':'border-2 border-outline-variant hover:border-primary')+'"><span class="material-symbols-outlined text-lg">'+(sel?'check':'radio_button_unchecked')+'</span></button>'
+      +'</div></div></div>';
   }).join('');
   updateSamedayBar();
 }
-
-function selectSameday(id) {
-  samedaySelected = (samedaySelected === id) ? null : id;
-  renderSamedayMenu();
+function selectSameday(id){ samedaySelected=(samedaySelected===id)?null:id; renderSamedayMenu(); }
+function deleteSamedayMenu(id){
+  samedayMenus=samedayMenus.filter(function(m){return m.id!==id;});
+  if(samedaySelected===id){samedaySelected=null;}
+  renderSamedayMenu(); showToast('ลบเมนูเรียบร้อยแล้ว');
+}
+function updateSamedayBar(){
+  var bar=document.getElementById('sameday-selected-bar');
+  var name=document.getElementById('sameday-selected-name');
+  var m=samedaySelected?samedayMenus.find(function(x){return x.id===samedaySelected;}):null;
+  if(m){name.textContent=m.emoji+' '+m.name;bar.classList.add('visible');}
+  else{bar.classList.remove('visible');}
+}
+function sendSameDayOrder(){
+  if(!samedaySelected){showToast('⚠️ กรุณาเลือกเมนูก่อน');return;}
+  if(!ordersRef){showToast('⚠️ ยังเชื่อมต่อ Firebase ไม่ได้');return;}
+  var m=samedayMenus.find(function(x){return x.id===samedaySelected;});
+  if(!m){return;}
+  ordersRef.push({
+    menuName:m.name, menuEmoji:m.emoji, type:'sameday',
+    dateStr:formatDate(new Date()), status:'pending', createdAt:Date.now()
+  }).then(function(){
+    samedaySelected=null; renderSamedayMenu();
+    showToast('✅ ส่งคำสั่งอาหารเรียบร้อยแล้ว!');
+  }).catch(function(e){ showToast('❌ เกิดข้อผิดพลาด: '+e.message); });
 }
 
-function deleteSamedayMenu(id) {
-  samedayMenus = samedayMenus.filter(function(m) { return m.id !== id; });
-  if (samedaySelected === id) { samedaySelected = null; }
-  renderSamedayMenu();
-  showToast('ลบเมนูเรียบร้อยแล้ว');
-}
-
-function updateSamedayBar() {
-  var bar  = document.getElementById('sameday-selected-bar');
-  var name = document.getElementById('sameday-selected-name');
-  var m = samedaySelected ? samedayMenus.find(function(x) { return x.id === samedaySelected; }) : null;
-  if (m) { name.textContent = m.emoji + ' ' + m.name; bar.classList.add('visible'); }
-  else   { bar.classList.remove('visible'); }
-}
-
-function sendSameDayOrder() {
-  if (!samedaySelected) { showToast('⚠️ กรุณาเลือกเมนูก่อน'); return; }
-  var m = samedayMenus.find(function(x) { return x.id === samedaySelected; });
-  if (!m) { return; }
-  var now = new Date();
-  orders.push({
-    id: ++orderIdCounter, menuName: m.name, menuEmoji: m.emoji,
-    type: 'sameday', dateStr: formatDate(now), status: 'pending'
-  });
-  samedaySelected = null;
-  renderSamedayMenu();
-  updateReceiverBadge();
-  showToast('✅ ส่งคำสั่งอาหารเรียบร้อยแล้ว!');
-}
-
-/* ===== SCHEDULE ===== */
-function initSchedule() {
-  var today = new Date();
-  var chips = document.getElementById('date-chips');
-  chips.innerHTML = '';
-  for (var i = 0; i < 7; i++) {
-    var d = new Date(today);
-    d.setDate(today.getDate() + i);
-    var iso      = d.toISOString().split('T')[0];
-    var dayLabel = (i === 0) ? 'วันนี้' : thaiDays[d.getDay()];
-    var dayNum   = d.getDate();
-    var monthLbl = thaiMonths[d.getMonth()];
-    // BUG2 FIX: also sync scheduleDateLabel when initSchedule runs and finds current scheduleDate
-    var chipLabel = (i === 0) ? 'วันนี้' : (dayNum + ' ' + monthLbl);
-    if (iso === scheduleDate) { scheduleDateLabel = chipLabel; }
-    var isActive = (scheduleDate === iso);
-    var chip = document.createElement('button');
-    chip.className = 'date-chip' + (isActive ? ' active' : '');
-    chip.dataset.date  = iso;
-    chip.dataset.label = chipLabel;
-    // BUG1 FIX: use CSS classes for chip text, not inline color styles
-    chip.innerHTML = '<span class="chip-day">'   + dayLabel + '</span>'
-                   + '<span class="chip-num">'   + dayNum   + '</span>'
-                   + '<span class="chip-month">' + monthLbl + '</span>';
-    (function(isoVal, labelVal) {
-      chip.onclick = function() {
-        scheduleDate      = isoVal;
-        scheduleDateLabel = labelVal;
-        initSchedule();
-        renderScheduleMenu();
-      };
-    })(iso, chipLabel);
+/* =====================================================
+   SCHEDULE MENU
+   ===================================================== */
+function initSchedule(){
+  var today=new Date();
+  var chips=document.getElementById('date-chips');
+  chips.innerHTML='';
+  for(var i=0;i<7;i++){
+    var d=new Date(today);
+    d.setDate(today.getDate()+i);
+    var iso=d.toISOString().split('T')[0];
+    var dayLabel=(i===0)?'วันนี้':thaiDays[d.getDay()];
+    var dayNum=d.getDate();
+    var monthLbl=thaiMonths[d.getMonth()];
+    var chipLabel=(i===0)?'วันนี้':(dayNum+' '+monthLbl);
+    if(iso===scheduleDate){scheduleDateLabel=chipLabel;}
+    var isActive=(scheduleDate===iso);
+    var chip=document.createElement('button');
+    chip.className='date-chip'+(isActive?' active':'');
+    chip.dataset.date=iso; chip.dataset.label=chipLabel;
+    chip.innerHTML='<span class="chip-day">'+dayLabel+'</span>'
+      +'<span class="chip-num">'+dayNum+'</span>'
+      +'<span class="chip-month">'+monthLbl+'</span>';
+    (function(iv,lv){chip.onclick=function(){scheduleDate=iv;scheduleDateLabel=lv;initSchedule();renderScheduleMenu();};})(iso,chipLabel);
     chips.appendChild(chip);
   }
 }
-
-function renderScheduleMenu() {
-  var el = document.getElementById('schedule-menu-list');
-  if (!scheduleMenus.length) {
-    el.innerHTML = '<p class="text-center text-sm text-on-surface-variant py-10">ไม่มีเมนู — กด "เพิ่มเมนู" เพื่อเพิ่ม</p>';
-    updateScheduleBar();
-    return;
+function renderScheduleMenu(){
+  var el=document.getElementById('schedule-menu-list');
+  if(!scheduleMenus.length){
+    el.innerHTML='<p class="text-center text-sm text-on-surface-variant py-10">ไม่มีเมนู — กด "เพิ่มเมนู" เพื่อเพิ่ม</p>';
+    updateScheduleBar();return;
   }
-  el.innerHTML = scheduleMenus.map(function(m) {
-    var sel = (scheduleSelected === m.id);
-    return '<div class="menu-card bg-white rounded-2xl border ' + (sel ? 'border-primary shadow-md' : 'border-zinc-100 shadow-sm') + ' overflow-hidden">'
-      + '<div class="p-4 flex items-center gap-3">'
-      + '<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">' + m.emoji + '</div>'
-      + '<div class="flex-1 min-w-0">'
-      + '<p class="font-bold text-on-surface text-sm leading-tight">' + escHtml(m.name) + '</p>'
-      + '<p class="text-xs text-on-surface-variant mt-0.5 truncate">' + escHtml(m.nameEn) + '</p>'
-      + '</div>'
-      + '<div class="flex items-center gap-2">'
-      + '<button onclick="deleteScheduleMenu(' + m.id + ')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors">'
-      + '<span class="material-symbols-outlined text-lg">delete</span></button>'
-      + '<button onclick="selectSchedule(' + m.id + ')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all ' + (sel ? 'bg-primary text-white' : 'border-2 border-outline-variant hover:border-primary') + '">'
-      + '<span class="material-symbols-outlined text-lg">' + (sel ? 'check' : 'radio_button_unchecked') + '</span></button>'
-      + '</div></div></div>';
+  el.innerHTML=scheduleMenus.map(function(m){
+    var sel=(scheduleSelected===m.id);
+    return '<div class="menu-card bg-white rounded-2xl border '+(sel?'border-primary shadow-md':'border-zinc-100 shadow-sm')+' overflow-hidden">'
+      +'<div class="p-4 flex items-center gap-3">'
+      +'<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-2xl flex-shrink-0">'+m.emoji+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<p class="font-bold text-on-surface text-sm leading-tight">'+escHtml(m.name)+'</p>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5 truncate">'+escHtml(m.nameEn)+'</p>'
+      +'</div>'
+      +'<div class="flex items-center gap-2">'
+      +'<button onclick="deleteScheduleMenu('+m.id+')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>'
+      +'<button onclick="selectSchedule('+m.id+')" class="w-9 h-9 flex items-center justify-center rounded-full transition-all '+(sel?'bg-primary text-white':'border-2 border-outline-variant hover:border-primary')+'"><span class="material-symbols-outlined text-lg">'+(sel?'check':'radio_button_unchecked')+'</span></button>'
+      +'</div></div></div>';
   }).join('');
   updateScheduleBar();
 }
-
-function selectSchedule(id) {
-  scheduleSelected = (scheduleSelected === id) ? null : id;
-  renderScheduleMenu();
+function selectSchedule(id){scheduleSelected=(scheduleSelected===id)?null:id;renderScheduleMenu();}
+function deleteScheduleMenu(id){
+  scheduleMenus=scheduleMenus.filter(function(m){return m.id!==id;});
+  if(scheduleSelected===id){scheduleSelected=null;}
+  renderScheduleMenu();showToast('ลบเมนูเรียบร้อยแล้ว');
+}
+function updateScheduleBar(){
+  var bar=document.getElementById('schedule-selected-bar');
+  var nameEl=document.getElementById('schedule-selected-name');
+  var dateEl=document.getElementById('schedule-selected-date');
+  var m=scheduleSelected?scheduleMenus.find(function(x){return x.id===scheduleSelected;}):null;
+  if(m&&scheduleDate){nameEl.textContent=m.emoji+' '+m.name;dateEl.textContent=scheduleDateLabel;bar.classList.add('visible');}
+  else{bar.classList.remove('visible');}
+}
+function sendScheduleOrder(){
+  if(!scheduleSelected){showToast('⚠️ กรุณาเลือกเมนูก่อน');return;}
+  if(!ordersRef){showToast('⚠️ ยังเชื่อมต่อ Firebase ไม่ได้');return;}
+  var m=scheduleMenus.find(function(x){return x.id===scheduleSelected;});
+  if(!m){return;}
+  ordersRef.push({
+    menuName:m.name, menuEmoji:m.emoji, type:'schedule',
+    dateStr:scheduleDateLabel, status:'pending', createdAt:Date.now()
+  }).then(function(){
+    scheduleSelected=null;renderScheduleMenu();
+    showToast('✅ วางแผนสั่งอาหารเรียบร้อยแล้ว!');
+  }).catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
 }
 
-function deleteScheduleMenu(id) {
-  scheduleMenus = scheduleMenus.filter(function(m) { return m.id !== id; });
-  if (scheduleSelected === id) { scheduleSelected = null; }
-  renderScheduleMenu();
-  showToast('ลบเมนูเรียบร้อยแล้ว');
-}
-
-function updateScheduleBar() {
-  var bar    = document.getElementById('schedule-selected-bar');
-  var nameEl = document.getElementById('schedule-selected-name');
-  var dateEl = document.getElementById('schedule-selected-date');
-  var m = scheduleSelected ? scheduleMenus.find(function(x) { return x.id === scheduleSelected; }) : null;
-  if (m && scheduleDate) {
-    nameEl.textContent = m.emoji + ' ' + m.name;
-    // BUG2 FIX: read from JS state variable, not DOM query
-    dateEl.textContent = scheduleDateLabel;
-    bar.classList.add('visible');
-  } else {
-    bar.classList.remove('visible');
-  }
-}
-
-function sendScheduleOrder() {
-  if (!scheduleSelected) { showToast('⚠️ กรุณาเลือกเมนูก่อน'); return; }
-  if (!scheduleDate)     { showToast('⚠️ กรุณาเลือกวันที่ก่อน'); return; }
-  var m = scheduleMenus.find(function(x) { return x.id === scheduleSelected; });
-  if (!m) { return; }
-  // BUG2 FIX: use scheduleDateLabel from state — safe even if schedule page is not active
-  orders.push({
-    id: ++orderIdCounter, menuName: m.name, menuEmoji: m.emoji,
-    type: 'schedule', dateStr: scheduleDateLabel, status: 'pending'
-  });
-  scheduleSelected = null;
-  renderScheduleMenu();
-  updateReceiverBadge();
-  showToast('✅ วางแผนสั่งอาหารเรียบร้อยแล้ว!');
-}
-
-/* ===== ADD MENU MODAL ===== */
-function openAddMenuModal(target) {
-  currentAddTarget = target;
-  document.getElementById('new-menu-name').value  = '';
+/* =====================================================
+   ADD MENU MODAL
+   ===================================================== */
+function openAddMenuModal(target){
+  currentAddTarget=target;
+  document.getElementById('new-menu-name').value='';
   document.getElementById('modal-add-menu').classList.remove('hidden');
-  setTimeout(function() { document.getElementById('new-menu-name').focus(); }, 120);
+  setTimeout(function(){document.getElementById('new-menu-name').focus();},120);
+}
+function closeModal(){document.getElementById('modal-add-menu').classList.add('hidden');}
+function confirmAddMenu(){
+  var name=document.getElementById('new-menu-name').value.trim();
+  if(!name){showToast('⚠️ กรุณาใส่ชื่อเมนู');return;}
+  var nm={id:++menuIdCounter,name:name,nameEn:name,emoji:FOOD_EMOJIS[Math.floor(Math.random()*FOOD_EMOJIS.length)]};
+  if(currentAddTarget==='sameday'){samedayMenus.push(nm);renderSamedayMenu();}
+  else{scheduleMenus.push(nm);renderScheduleMenu();}
+  closeModal();showToast('✅ เพิ่มเมนูเรียบร้อยแล้ว');
 }
 
-function closeModal() {
-  document.getElementById('modal-add-menu').classList.add('hidden');
-}
-
-function confirmAddMenu() {
-  var name  = document.getElementById('new-menu-name').value.trim();
-  if (!name) { showToast('⚠️ กรุณาใส่ชื่อเมนู'); return; }
-  var newMenu = {
-    id: ++menuIdCounter, name: name, nameEn: name,
-    emoji: FOOD_EMOJIS[Math.floor(Math.random() * FOOD_EMOJIS.length)]
-  };
-  if (currentAddTarget === 'sameday') { samedayMenus.push(newMenu); renderSamedayMenu(); }
-  else                                { scheduleMenus.push(newMenu); renderScheduleMenu(); }
-  closeModal();
-  showToast('✅ เพิ่มเมนูเรียบร้อยแล้ว');
-}
-
-/* ===== RECEIVER ===== */
-function renderReceiverOrders() {
-  // BUG3 FIX: filter only pending+acknowledged (not deleted); empty state depends on this count
-  var visible = orders.filter(function(o) { return o.status === 'pending' || o.status === 'acknowledged'; });
-  document.getElementById('receiver-empty').style.display = visible.length ? 'none' : 'flex';
-  var list = document.getElementById('receiver-order-list');
-  list.innerHTML = visible.map(function(o) {
-    var isDone    = (o.status === 'acknowledged');
-    var typeLabel = (o.type === 'sameday') ? 'Same Day' : 'Schedule';
-    var typeCls   = (o.type === 'sameday') ? 'bg-pink-100 text-primary' : 'bg-green-100 text-tertiary';
-    var barCls    = (o.type === 'sameday') ? 'bg-primary-container' : 'bg-tertiary-container';
-    // BUG4 FIX: use .img-grayscale CSS class instead of Tailwind 'grayscale' utility
-    return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 ' + (isDone ? 'opacity-60' : 'shadow-sm') + ' overflow-hidden" data-order-id="' + o.id + '">'
-      + '<div class="h-2 ' + barCls + (isDone ? ' opacity-40' : '') + '"></div>'
-      + '<div class="p-5">'
-      + '<div class="flex items-start gap-3 mb-4">'
-      + '<div class="w-14 h-14 rounded-xl ' + (isDone ? 'bg-zinc-100' : 'bg-primary-fixed') + ' flex items-center justify-center text-2xl flex-shrink-0' + (isDone ? ' img-grayscale' : '') + '">' + o.menuEmoji + '</div>'
-      + '<div class="flex-1 min-w-0">'
-      + '<div class="flex items-center gap-2 mb-1 flex-wrap">'
-      + '<span class="text-xs font-bold px-2 py-0.5 rounded-full ' + (isDone ? 'bg-zinc-100 text-zinc-400' : typeCls) + '">' + typeLabel + '</span>'
-      + '<span class="text-xs text-on-surface-variant">#' + o.id + '</span>'
-      + (isDone ? '<span class="text-xs font-semibold text-tertiary bg-green-50 px-2 py-0.5 rounded-full">✓ รับทราบแล้ว</span>' : '')
-      + '</div>'
-      + '<p class="font-bold text-base ' + (isDone ? 'text-zinc-400 line-through decoration-2' : 'text-on-surface') + '">' + escHtml(o.menuName) + '</p>'
-      + '<p class="text-sm mt-0.5 ' + (isDone ? 'text-zinc-300 line-through' : 'text-on-surface-variant') + '">📅 ' + o.dateStr + '</p>'
-      + '</div></div>'
-      + '<div class="flex items-center gap-2 p-3 ' + (isDone ? 'bg-zinc-50' : 'bg-primary-fixed/30') + ' rounded-xl mb-4">'
-      + '<span class="material-symbols-outlined text-base ' + (isDone ? 'text-zinc-300' : 'text-primary') + '">person</span>'
-      + '<div><p class="text-xs text-on-surface-variant">ผู้สั่ง</p>'
-      + '<p class="text-sm font-semibold ' + (isDone ? 'text-zinc-400' : 'text-on-surface') + '">ผู้บริหาร</p></div>'
-      + '</div>'
-      + (isDone
-        ? '<button class="order-delete-btn w-full py-3 flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 text-zinc-400 text-sm font-semibold hover:bg-error-container hover:text-error hover:border-error transition-all">'
-          + '<span class="material-symbols-outlined text-base">delete</span> ลบรายการนี้</button>'
-        : '<button class="order-ack-btn btn-primary w-full py-3 flex items-center justify-center gap-2">'
-          + '<span class="material-symbols-outlined text-base">check_circle</span> รับทราบคำสั่ง</button>'
+/* =====================================================
+   RECEIVER
+   ===================================================== */
+function renderReceiverOrders(){
+  var visible=orders.filter(function(o){return o.status==='pending'||o.status==='acknowledged';});
+  document.getElementById('receiver-empty').style.display=visible.length?'none':'flex';
+  var list=document.getElementById('receiver-order-list');
+  list.innerHTML=visible.map(function(o){
+    var isDone=(o.status==='acknowledged');
+    var typeLabel=(o.type==='sameday')?'Same Day':'Schedule';
+    var typeCls=(o.type==='sameday')?'bg-pink-100 text-primary':'bg-green-100 text-tertiary';
+    var barCls=(o.type==='sameday')?'bg-primary-container':'bg-tertiary-container';
+    return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 '+(isDone?'opacity-60':'shadow-sm')+' overflow-hidden" data-fbkey="'+escHtml(o._fbKey)+'">'
+      +'<div class="h-2 '+barCls+(isDone?' opacity-40':'')+'"></div>'
+      +'<div class="p-5">'
+      +'<div class="flex items-start gap-3 mb-4">'
+      +'<div class="w-14 h-14 rounded-xl '+(isDone?'bg-zinc-100 img-grayscale':'bg-primary-fixed')+' flex items-center justify-center text-2xl flex-shrink-0">'+o.menuEmoji+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<div class="flex items-center gap-2 mb-1 flex-wrap">'
+      +'<span class="text-xs font-bold px-2 py-0.5 rounded-full '+(isDone?'bg-zinc-100 text-zinc-400':typeCls)+'">'+typeLabel+'</span>'
+      +(isDone?'<span class="text-xs font-semibold text-tertiary bg-green-50 px-2 py-0.5 rounded-full">✓ รับทราบแล้ว</span>':'')
+      +'</div>'
+      +'<p class="font-bold text-base '+(isDone?'text-zinc-400 line-through decoration-2':'text-on-surface')+'">'+escHtml(o.menuName)+'</p>'
+      +'<p class="text-sm mt-0.5 '+(isDone?'text-zinc-300 line-through':'text-on-surface-variant')+'">📅 '+o.dateStr+'</p>'
+      +'</div></div>'
+      +'<div class="flex items-center gap-2 p-3 '+(isDone?'bg-zinc-50':'bg-primary-fixed/30')+' rounded-xl mb-4">'
+      +'<span class="material-symbols-outlined text-base '+(isDone?'text-zinc-300':'text-primary')+'">person</span>'
+      +'<div><p class="text-xs text-on-surface-variant">ผู้สั่ง</p>'
+      +'<p class="text-sm font-semibold '+(isDone?'text-zinc-400':'text-on-surface')+'">ผู้บริหาร</p></div>'
+      +'</div>'
+      +(isDone
+        ?'<button class="order-delete-btn w-full py-3 flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 text-zinc-400 text-sm font-semibold hover:bg-error-container hover:text-error hover:border-error transition-all"><span class="material-symbols-outlined text-base">delete</span> ลบรายการนี้</button>'
+        :'<button class="order-ack-btn btn-primary w-full py-3 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-base">check_circle</span> รับทราบคำสั่ง</button>'
       )
-      + '</div></div>';
+      +'</div></div>';
   }).join('');
-
-  // attach listeners via data attribute — safe for any numeric ID size
-  list.querySelectorAll('.order-ack-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var card = btn.closest('[data-order-id]');
-      if (card) { acknowledgeOrder(Number(card.dataset.orderId)); }
+  list.querySelectorAll('.order-ack-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var card=btn.closest('[data-fbkey]');
+      if(card){acknowledgeOrder(card.dataset.fbkey);}
     });
   });
-  list.querySelectorAll('.order-delete-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var card = btn.closest('[data-order-id]');
-      if (card) { deleteOrder(Number(card.dataset.orderId)); }
+  list.querySelectorAll('.order-delete-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var card=btn.closest('[data-fbkey]');
+      if(card){deleteOrder(card.dataset.fbkey);}
     });
   });
-
   updateReceiverBadge();
 }
-
-function acknowledgeOrder(id) {
-  var order = orders.find(function(o) { return o.id === id; });
-  if (!order) { return; }
-  order.status = 'acknowledged';
-  notifications.unshift({
-    id: Date.now(), orderId: id, menuName: order.menuName, menuEmoji: order.menuEmoji,
-    dateStr: order.dateStr, type: order.type, timestamp: new Date(), read: false,
-    message: 'เมนู "' + order.menuName + '" ได้รับการดำเนินการเรียบร้อยแล้ว'
-  });
-  renderReceiverOrders();
-  updateNotifBadge();
-  showToast('✅ รับทราบคำสั่งเรียบร้อยแล้ว');
+function acknowledgeOrder(fbKey){
+  var order=orders.find(function(o){return o._fbKey===fbKey;});
+  if(!order||!ordersRef){return;}
+  ordersRef.child(fbKey).update({status:'acknowledged'}).then(function(){
+    notifsRef.push({
+      menuName:order.menuName, menuEmoji:order.menuEmoji,
+      dateStr:order.dateStr, type:order.type,
+      message:'เมนู "'+order.menuName+'" ได้รับการดำเนินการเรียบร้อยแล้ว',
+      read:false, createdAt:Date.now()
+    });
+    showToast('✅ รับทราบคำสั่งเรียบร้อยแล้ว');
+  }).catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
+}
+function deleteOrder(fbKey){
+  if(!ordersRef){return;}
+  ordersRef.child(fbKey).remove().then(function(){showToast('ลบรายการเรียบร้อยแล้ว');})
+  .catch(function(e){showToast('❌ เกิดข้อผิดพลาด: '+e.message);});
+}
+function updateReceiverBadge(){
+  var count=orders.filter(function(o){return o.status==='pending';}).length;
+  var badge=document.getElementById('receiver-badge');
+  if(!badge){return;}
+  if(count>0){badge.classList.remove('hidden');badge.textContent=count+' ออร์เดอร์';}
+  else{badge.classList.add('hidden');}
 }
 
-function deleteOrder(id) {
-  orders = orders.filter(function(o) { return o.id !== id; });
-  renderReceiverOrders();
-  showToast('ลบรายการเรียบร้อยแล้ว');
-}
-
-function updateReceiverBadge() {
-  var count = orders.filter(function(o) { return o.status === 'pending'; }).length;
-  var badge = document.getElementById('receiver-badge');
-  if (!badge) { return; }
-  if (count > 0) { badge.classList.remove('hidden'); badge.textContent = count + ' ออร์เดอร์'; }
-  else           { badge.classList.add('hidden'); }
-}
-
-/* ===== NOTIFICATIONS ===== */
-function renderNotifications() {
-  var empty = document.getElementById('notifs-empty');
-  var list  = document.getElementById('notif-list');
-  empty.style.display = notifications.length ? 'none' : 'flex';
-  list.innerHTML = notifications.map(function(n) {
-    return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 shadow-sm p-4 flex items-start gap-3" data-notif-id="' + n.id + '">'
-      + '<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-xl flex-shrink-0">' + n.menuEmoji + '</div>'
-      + '<div class="flex-1 min-w-0">'
-      + '<div class="flex items-center gap-2 mb-1">'
-      + '<span class="text-xs font-bold text-primary px-2 py-0.5 rounded-full bg-pink-50">รับทราบแล้ว</span>'
-      + '<span class="text-xs text-on-surface-variant">#' + n.orderId + '</span>'
-      + '</div>'
-      + '<p class="text-sm font-semibold text-on-surface leading-tight">' + escHtml(n.message) + '</p>'
-      + '<p class="text-xs text-on-surface-variant mt-0.5">📅 ' + n.dateStr + ' · ' + formatTime(n.timestamp) + '</p>'
-      + '</div>'
-      + '<button class="notif-delete-btn w-7 h-7 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors flex-shrink-0">'
-      + '<span class="material-symbols-outlined text-base">close</span></button>'
-      + '</div>';
+/* =====================================================
+   NOTIFICATIONS
+   ===================================================== */
+function renderNotifications(){
+  var empty=document.getElementById('notifs-empty');
+  var list=document.getElementById('notif-list');
+  empty.style.display=notifications.length?'none':'flex';
+  list.innerHTML=notifications.map(function(n){
+    return '<div class="notif-item bg-white rounded-2xl border border-zinc-100 shadow-sm p-4 flex items-start gap-3" data-fbkey="'+escHtml(n._fbKey)+'">'
+      +'<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-xl flex-shrink-0">'+n.menuEmoji+'</div>'
+      +'<div class="flex-1 min-w-0">'
+      +'<div class="flex items-center gap-2 mb-1">'
+      +'<span class="text-xs font-bold text-primary px-2 py-0.5 rounded-full bg-pink-50">รับทราบแล้ว</span>'
+      +'</div>'
+      +'<p class="text-sm font-semibold text-on-surface leading-tight">'+escHtml(n.message)+'</p>'
+      +'<p class="text-xs text-on-surface-variant mt-0.5">📅 '+n.dateStr+'</p>'
+      +'</div>'
+      +'<button class="notif-delete-btn w-7 h-7 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors flex-shrink-0"><span class="material-symbols-outlined text-base">close</span></button>'
+      +'</div>';
   }).join('');
-  list.querySelectorAll('.notif-delete-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var card = btn.closest('[data-notif-id]');
-      if (card) { deleteNotif(Number(card.dataset.notifId)); }
+  list.querySelectorAll('.notif-delete-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var card=btn.closest('[data-fbkey]');
+      if(card){deleteNotif(card.dataset.fbkey);}
     });
   });
-  // BUG5 FIX: mark all read then update badge — called before return in goTo so badge clears correctly
-  notifications.forEach(function(n) { n.read = true; });
+  notifications.forEach(function(n){
+    if(!n.read&&notifsRef){notifsRef.child(n._fbKey).update({read:true});}
+  });
   updateNotifBadge();
 }
-
-function deleteNotif(id) {
-  notifications = notifications.filter(function(n) { return n.id !== id; });
-  renderNotifications();
-  showToast('ลบการแจ้งเตือนแล้ว');
+function deleteNotif(fbKey){
+  if(!notifsRef){return;}
+  notifsRef.child(fbKey).remove().then(function(){showToast('ลบการแจ้งเตือนแล้ว');});
+}
+function clearAllNotifs(){
+  if(!notifications.length){showToast('ไม่มีการแจ้งเตือน');return;}
+  if(!notifsRef){return;}
+  notifsRef.remove().then(function(){showToast('ลบการแจ้งเตือนทั้งหมดแล้ว');});
+}
+function updateNotifBadge(){
+  var badge=document.getElementById('notif-badge');
+  if(!badge){return;}
+  var unread=notifications.filter(function(n){return !n.read;}).length;
+  if(unread>0){badge.classList.remove('hidden');}else{badge.classList.add('hidden');}
 }
 
-function clearAllNotifs() {
-  if (!notifications.length) { showToast('ไม่มีการแจ้งเตือน'); return; }
-  notifications = [];
-  renderNotifications();
-  showToast('ลบการแจ้งเตือนทั้งหมดแล้ว');
-}
+/* =====================================================
+   UTILS
+   ===================================================== */
+function formatDate(d){return d.getDate()+' '+thaiMonths[d.getMonth()]+' '+(d.getFullYear()+543);}
 
-function updateNotifBadge() {
-  var badge = document.getElementById('notif-badge');
-  if (!badge) { return; }
-  var unread = notifications.filter(function(n) { return !n.read; }).length;
-  if (unread > 0) { badge.classList.remove('hidden'); }
-  else            { badge.classList.add('hidden'); }
-}
-
-/* ===== UTILS ===== */
-function formatDate(d) {
-  return d.getDate() + ' ' + thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543);
-}
-function formatTime(d) {
-  return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-}
-
-document.addEventListener('keydown', function(e) {
-  var modalOpen = !document.getElementById('modal-add-menu').classList.contains('hidden');
-  if (e.key === 'Escape' && modalOpen) { closeModal(); }
-  if (e.key === 'Enter'  && modalOpen) { e.preventDefault(); confirmAddMenu(); }
+document.addEventListener('keydown',function(e){
+  var modalOpen=!document.getElementById('modal-add-menu').classList.contains('hidden');
+  if(e.key==='Escape'&&modalOpen){closeModal();}
+  if(e.key==='Enter'&&modalOpen){e.preventDefault();confirmAddMenu();}
 });
 </script>
 </body>
-</html> 
+</html>
